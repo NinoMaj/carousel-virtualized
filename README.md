@@ -1,5 +1,5 @@
 # Carousel-virtualized (in active development)
-Highly performant react carousel built with virtualization (thanks to [react-window](https://github.com/bvaughn/react-window "react-window github page")
+Highly performant react carousel built with virtualization (thanks to [react-window](https://github.com/bvaughn/react-window "react-window github page"))
 
 # Motivation
 After trying most of carousels out there, we couldn't find one that would allow us to load large number of slide (e.g. >10k) and had all the features that one carousel needs.
@@ -57,6 +57,7 @@ Discuss before implementation:
 
 ## Creators
 [Nino Majder](https://github.com/NinoMaj "Nino Majder's github page")
+
 [Ivica Batinić](https://github.com/isBatak "Ivica Batinić's github page")
 
 ## License
