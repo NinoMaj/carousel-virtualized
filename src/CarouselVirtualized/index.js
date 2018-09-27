@@ -113,7 +113,6 @@ class CarouselVirtualized extends React.PureComponent {
     window.addEventListener('resize', this.onResize);
   }
 
-
   componentDidUpdate(prevProps) {
     if (prevProps.slideIndex !== this.props.slideIndex) {
       this.setState({ currentIndex: this.props.slideIndex });
@@ -123,7 +122,7 @@ class CarouselVirtualized extends React.PureComponent {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
-    window.cancelAnimationFrame(window, this.moveTimer);
+    window.cancelAnimationFrame.call(window, this.moveTimer);
     this.moveTimer = null;
   }
 
@@ -195,7 +194,7 @@ class CarouselVirtualized extends React.PureComponent {
       return;
     }
 
-    window.cancelAnimationFrame(window, this.moveTimer);
+    window.cancelAnimationFrame.call(window, this.moveTimer);
 
     const touch = event.targetTouches[0];
     this.onDragMove(touch.screenX, touch.screenY);
@@ -214,7 +213,7 @@ class CarouselVirtualized extends React.PureComponent {
   }
 
   onDragStart(startX, startY, isMouseDragActive, isTouchDragActive) {
-    window.cancelAnimationFrame(window, this.moveTimer);
+    window.cancelAnimationFrame.call(window, this.moveTimer);
 
     this.setState({
       isMouseDragActive,
@@ -225,7 +224,7 @@ class CarouselVirtualized extends React.PureComponent {
   }
 
   onDragMove(screenX, screenY) {
-    this.moveTimer = window.requestAnimationFrame(window, () => {
+    this.moveTimer = window.requestAnimationFrame.call(window, () => {
       this.setState((state) => ({
         deltaX: screenX - state.startX,
         deltaY: screenY - state.startY,
@@ -235,7 +234,7 @@ class CarouselVirtualized extends React.PureComponent {
   }
 
   onDragEnd() {
-    window.cancelAnimationFrame(window, this.moveTimer);
+    window.cancelAnimationFrame.call(window, this.moveTimer);
 
     this.computeNextSlide();
 
