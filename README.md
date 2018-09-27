@@ -8,8 +8,7 @@ After trying most of carousels out there, we couldn't find one that would allow 
 ...
 
 # Todo
-- outerTagName and innerTagName, now is always div
-- utalize render prop
+- utilize render prop
 - add animation
 - add documentation
 - make demos on codesandbox
@@ -20,10 +19,11 @@ After trying most of carousels out there, we couldn't find one that would allow 
 - a11y
 
 Discuss before implementation:
+- wrapAround - we probably need this
 - autoplay - should we support this
 - dots  - should we support this
+- outerTagName and innerTagName, now is always div
 - lockOnWindowScroll and documentScroll - do we need this
-- wrapAround - we probably need this
 
 # Done
  - auto container sizer
