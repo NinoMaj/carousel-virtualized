@@ -2,9 +2,16 @@
   "name": "carousel-virtualized",
   "version": "0.0.1",
   "description": "Virtualized react carousel",
-  "main": "src/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "typings": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --coverage",
+    "watch": "jest --watch --coverage",
+    "benchmark": "jest benchmark",
+    "benchmark-watch": "jest benchmark --watch",
+    "lint": "tslint --project .",
+    "build": "rollup -c"
   },
   "repository": {
     "type": "git",
@@ -24,6 +31,40 @@
   "homepage": "https://github.com/NinoMaj/carousel-virtualized#readme",
   "dependencies": {
     "lodash.throttle": "^4.1.1",
-    "react-window": "1.1.2"
+    "react-window": "^1.1.2"
+  },
+  "devDependencies": {
+    "@infinumjs/tslint-config": "^2.0.0-beta.5",
+    "@types/lodash": "^4.14.116",
+    "@types/lodash.throttle": "^4.1.4",
+    "jest": "^23.6.0",
+    "rollup": "^0.66.2",
+    "rollup-plugin-typescript2": "^0.17.0",
+    "rollup-plugin-uglify": "^6.0.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.1"
+  },
+  "peerDependencies": {
+    "react": ">=15"
+  },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "/test/",
+      "/node_modules/",
+      "/docs/"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testRegex": "test/(.*).ts",
+    "transform": {
+      ".ts": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "enableTsDiagnostics": true
+      }
+    }
   }
 }
