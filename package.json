@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/NinoMaj/carousel-virtualized#readme",
   "dependencies": {
-    "react-swipeable": "4.3.0",
+    "lodash.throttle": "^4.1.1",
     "react-window": "1.1.2"
   }
 }

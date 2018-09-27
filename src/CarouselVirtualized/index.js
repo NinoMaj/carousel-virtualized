@@ -1,14 +1,12 @@
-/* eslint-disable */
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import { FixedSizeList as Carousel } from 'react-window';
-import throttle from 'lodash/throttle';
+import throttle from 'lodash.throttle';
 
 import { DIRECTION } from '../enums/direction';
 import { EVENT_NAME } from '../enums/eventName';
 import { KEYBOARD_EVENT } from '../enums/keyboardEvent';
 import { RESIZE_THROTTLE_THRESHOLD } from '../consts';
-
 
 class CarouselVirtualized extends React.PureComponent {
   static propTypes = {
