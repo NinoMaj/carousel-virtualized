@@ -12,6 +12,8 @@ import { RESIZE_THROTTLE_THRESHOLD } from '../consts';
 
 class CarouselVirtualized extends React.PureComponent {
   static propTypes = {
+    autofocus: PropTypes.bool,
+    carouselName: PropTypes.string,
     children: PropTypes.func.isRequired,
     disableDrag: PropTypes.bool,
     disableTouch: PropTypes.bool,
@@ -25,7 +27,7 @@ class CarouselVirtualized extends React.PureComponent {
     itemData: PropTypes.any,
     itemSize: PropTypes.number,
     outerClassName: PropTypes.string,
-    outerStyle: PropTypes.string,
+    outerStyle: PropTypes.object,
     overscanCount: PropTypes.number,
     slideCount: PropTypes.number,
     style: PropTypes.object,
@@ -33,12 +35,17 @@ class CarouselVirtualized extends React.PureComponent {
   }
 
   static defaultProps = {
+    autofocus: false,
+    carouselName: '', 
     disableDrag: false,
     disableTouch: false,
     height: null,
     initialScrollOffset: 0,
     innerClassName: null,
+    itemSize: null,
+    itemData: null,
     outerClassName: null,
+    outerStyle: {},
     overscanCount: 1,
     style: {},
     slideCount: null,
@@ -118,7 +125,7 @@ class CarouselVirtualized extends React.PureComponent {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
-    window.cancelAnimationFrame.call(window, this.moveTimer);
+    window.cancelAnimationFrame(window, this.moveTimer);
     this.moveTimer = null;
   }
 
@@ -166,8 +173,8 @@ class CarouselVirtualized extends React.PureComponent {
 
   handleOnMouseClick() {
     if (this.props.disableDrag || !this.state.isMouseDragActive) {
-      return
-    };
+      return;
+    }
 
     if (this.state.mouseIsMoving) {
       event.preventDefault();
@@ -190,7 +197,7 @@ class CarouselVirtualized extends React.PureComponent {
       return;
     }
 
-    window.cancelAnimationFrame.call(window, this.moveTimer);
+    window.cancelAnimationFrame(window, this.moveTimer);
 
     const touch = event.targetTouches[0];
     this.onDragMove(touch.screenX, touch.screenY);
@@ -209,7 +216,7 @@ class CarouselVirtualized extends React.PureComponent {
   }
 
   onDragStart(startX, startY, isMouseDragActive, isTouchDragActive) {
-    window.cancelAnimationFrame.call(window, this.moveTimer);
+    window.cancelAnimationFrame(window, this.moveTimer);
 
     this.setState({
       isMouseDragActive,
@@ -220,17 +227,17 @@ class CarouselVirtualized extends React.PureComponent {
   }
 
   onDragMove(screenX, screenY) {
-    this.moveTimer = window.requestAnimationFrame.call(window, () => {
-      this.setState({
-        deltaX: screenX - this.state.startX,
-        deltaY: screenY - this.state.startY,
-        mouseIsMoving: this.state.isMouseDragActive,
-      });
+    this.moveTimer = window.requestAnimationFrame(window, () => {
+      this.setState((state) => ({
+        deltaX: screenX - state.startX,
+        deltaY: screenY - state.startY,
+        mouseIsMoving: state.isMouseDragActive,
+      }));
     });
   }
 
   onDragEnd() {
-    window.cancelAnimationFrame.call(window, this.moveTimer);
+    window.cancelAnimationFrame(window, this.moveTimer);
 
     this.computeNextSlide();
 
@@ -348,15 +355,15 @@ class CarouselVirtualized extends React.PureComponent {
       <React.Fragment>
         {this.props.leftArrow && this.props.leftArrow({ onClick: this.handleLeftArrowClick })}
         <div
+          className={outerClassName}
           onClick={this.handleOnMouseClick}
+          onKeyDown={this.handleOnKeyDown}
+          onMouseDown={this.handleOnMouseDown}
+          onMouseMove={this.handleOnMouseMove}
           onTouchCancel={this.handleTouchCancel}
           onTouchEnd={this.handleTouchEnd}
           onTouchMove={this.handleTouchMove}
           onTouchStart={this.handleTouchStart}
-          className={outerClassName}
-          onKeyDown={this.handleOnKeyDown}
-          onMouseDown={this.handleOnMouseDown}
-          onMouseMove={this.handleOnMouseMove}
           ref={this.containerRef}
           role="listbox"
           style={{
