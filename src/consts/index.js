@@ -1,1 +1,0 @@
-export const RESIZE_THROTTLE_THRESHOLD = 500;
