@@ -5,4 +5,4 @@ export enum EVENT_NAME {
   RESIZE = 'resize',
   RIGHT_ARROW_CLICK = 'rightArrowClick',
   SWIPE = 'swipe',
-};
+}

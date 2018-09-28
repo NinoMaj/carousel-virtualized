@@ -11,6 +11,8 @@ import { DIRECTION } from '../enums/direction';
 import { EVENT_NAME } from '../enums/eventName';
 import { KEYBOARD_EVENT } from '../enums/keyboardEvent';
 
+declare const window: Window;
+
 interface ICarouselVirtualizedProps {
   autofocus?: boolean;
   carouselName?: string;
@@ -30,9 +32,9 @@ interface ICarouselVirtualizedProps {
   slideIndex?: number;
   style?: object;
   width?: number;
-  leftArrow?(any): any; // TODO: add type
-  onItemsRendered?(any): any; // TODO: add type
-  rightArrow?(any): any; // TODO: add type
+  leftArrow?(onClick: any): any; // TODO: add type
+  onItemsRendered?(items: any): any; // TODO: add type
+  rightArrow?(onClick: any): any; // TODO: add type
 }
 
 interface ICarouselVirtualizedState {
@@ -74,7 +76,7 @@ class CarouselVirtualized extends React.Component<
     outerStyle: PropTypes.object,
     overscanCount: PropTypes.number,
     rightArrow: PropTypes.func,
-    slideCount: PropTypes.number.isRequired,
+    slideCount: PropTypes.number,
     slideIndex: PropTypes.number,
     style: PropTypes.object,
     width: PropTypes.number,
@@ -127,7 +129,7 @@ class CarouselVirtualized extends React.Component<
           containerWidth: this.containerRef.current.clientWidth,
           eventName: EVENT_NAME.RESIZE,
         },
-        () => this.scrollToItem(this.props.slideIndex || 0)
+        () => this.scrollToItem(this.props.slideIndex || 0),
       );
     },
     RESIZE_THROTTLE_THRESHOLD,
@@ -208,7 +210,7 @@ class CarouselVirtualized extends React.Component<
     const calculatedItemSize: number = itemSize
       ? itemSize
       : slideCount
-        ? width / slideCount
+        ? (width || this.state.containerWidth) as number / slideCount
         : this.state.containerWidth || 0;
     const calculatedHeight: number|string = height || this.state.containerHeight || 0;
     const calculatedWidth: number =
@@ -217,7 +219,7 @@ class CarouselVirtualized extends React.Component<
         : width || this.state.containerWidth || 0;
     const calculatedInitialScrollOffset: number = initialScrollOffset
       ? initialScrollOffset
-      : (itemSize || this.state.containerWidth) * this.state.currentIndex;
+      : (itemSize || this.state.containerWidth) as number * this.state.currentIndex;
 
     return (
       <React.Fragment>
