@@ -15,7 +15,6 @@
     chalk "^2.0.0"
     esutils "^2.0.2"
     js-tokens "^4.0.0"
-
 "@infinumjs/tslint-config@^2.0.0-beta.5":
   version "2.0.0-beta.5"
   resolved "https://registry.yarnpkg.com/@infinumjs/tslint-config/-/tslint-config-2.0.0-beta.5.tgz#ff047476f996dcce2602027094427ef033da1a57"
@@ -3268,3 +3267,5 @@ yargs@^11.0.0:
     which-module "^2.0.0"
     y18n "^3.2.1"
     yargs-parser "^9.0.2"
+    
+ 
