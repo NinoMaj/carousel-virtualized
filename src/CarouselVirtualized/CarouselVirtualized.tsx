@@ -1,18 +1,17 @@
-import * as React from "react";
+import throttle from 'lodash.throttle';
 import * as PropTypes from 'prop-types';
-import throttle from "lodash.throttle";
+import * as React from 'react';
 import {
   FixedSizeList as Carousel,
-  FixedSizeList,
   ListChildComponentProps,
-} from "react-window";
+} from 'react-window';
 
-import { DIRECTION } from "../enums/direction";
-import { EVENT_NAME } from "../enums/eventName";
-import { KEYBOARD_EVENT } from "../enums/keyboardEvent";
-import { RESIZE_THROTTLE_THRESHOLD } from "../consts";
+import { RESIZE_THROTTLE_THRESHOLD } from '../consts';
+import { DIRECTION } from '../enums/direction';
+import { EVENT_NAME } from '../enums/eventName';
+import { KEYBOARD_EVENT } from '../enums/keyboardEvent';
 
-type CarouselVirtualizedProps = {
+interface ICarouselVirtualizedProps {
   autofocus?: boolean;
   carouselName?: string;
   children: React.ComponentType<ListChildComponentProps>;
@@ -24,21 +23,21 @@ type CarouselVirtualizedProps = {
   itemCount: number;
   itemData?: any;
   itemSize?: number;
-  leftArrow?(any): any; // TODO: add type
-  onItemsRendered?(any): any; // TODO: add type
   outerClassName?: string;
   outerStyle?: object;
   overscanCount?: number;
-  rightArrow?(any): any; // TODO: add type
   slideCount?: number;
   slideIndex?: number;
   style?: object;
   width?: number;
-};
+  leftArrow?(any): any; // TODO: add type
+  onItemsRendered?(any): any; // TODO: add type
+  rightArrow?(any): any; // TODO: add type
+}
 
-interface CarouselVirtualizedState {
-  containerHeight: number;
-  containerWidth: number;
+interface ICarouselVirtualizedState {
+  containerHeight: number | null;
+  containerWidth: number | null;
   currentIndex: number;
   deltaX: number;
   eventName: string;
@@ -51,8 +50,8 @@ interface CarouselVirtualizedState {
 }
 
 class CarouselVirtualized extends React.Component<
-  CarouselVirtualizedProps,
-  CarouselVirtualizedState
+  ICarouselVirtualizedProps,
+  ICarouselVirtualizedState
 > {
   public static propTypes = {
     autofocus: PropTypes.bool,
@@ -70,120 +69,209 @@ class CarouselVirtualized extends React.Component<
     itemData: PropTypes.any,
     itemSize: PropTypes.number,
     leftArrow: PropTypes.func,
-    rightArrow: PropTypes.func,
     onItemsRendered: PropTypes.func,
     outerClassName: PropTypes.string,
     outerStyle: PropTypes.object,
     overscanCount: PropTypes.number,
+    rightArrow: PropTypes.func,
     slideCount: PropTypes.number.isRequired,
     slideIndex: PropTypes.number,
     style: PropTypes.object,
     width: PropTypes.number,
-  }
+  };
 
   public static defaultProps = {
     autofocus: false,
-    carouselName: '', 
+    carouselName: '',
     disableDrag: false,
     disableTouch: false,
     height: null,
     initialScrollOffset: 0,
     innerClassName: null,
-    itemSize: null,
     itemData: null,
-    leftArrow: () => {},
-    rightArrow: () => {},
-    onItemsRendered: () => {},
+    itemSize: null,
+    leftArrow: () => { return; },
+    onItemsRendered: () => { return; },
     outerClassName: null,
     outerStyle: {},
     overscanCount: 1,
-    style: {},
+    rightArrow: () => { return; },
     slideCount: null,
     slideIndex: 0,
+    style: {},
     width: null,
-  }
+  };
 
   public static slidesMoved(deltaX, itemSize) {
     const threshold = 0.1;
     const bigDrag = Math.abs(Math.round(deltaX / itemSize));
     const smallDrag = Math.abs(deltaX) >= itemSize * threshold ? 1 : 0;
+
     return deltaX < 0
       ? Math.max(smallDrag, bigDrag)
       : -Math.max(bigDrag, smallDrag);
   }
 
-  state = {
-    containerHeight: null,
-    containerWidth: null,
-    currentIndex: this.props.slideIndex,
-    deltaX: 0,
-    eventName: EVENT_NAME.INITIAL,
-    isMounted: false,
-    isMouseDragActive: false,
-    isTouchDragActive: false,
-    mouseIsMoving: false,
-    startX: 0,
-    startY: 0,
-  };
-
   private moveTimer: number | null = null;
 
-  private containerRef: React.RefObject<HTMLDivElement> = React.createRef();
+  private containerRef: any = React.createRef();
   // TODO: add type, something like
   // private carouselRef: React.Ref<FixedSizeList> = React.createRef();
   private carouselRef: any = React.createRef();
 
+  private throttledResize = throttle(
+    () => {
+      this.setState(
+        {
+          containerHeight: this.containerRef.current.clientHeight,
+          containerWidth: this.containerRef.current.clientWidth,
+          eventName: EVENT_NAME.RESIZE,
+        },
+        () => this.scrollToItem(this.props.slideIndex || 0)
+      );
+    },
+    RESIZE_THROTTLE_THRESHOLD,
+    {
+      leading: false,
+      trailing: true,
+    },
+  );
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      containerHeight: 0,
+      containerWidth: 0,
+      currentIndex: this.props.slideIndex || 0,
+      deltaX: 0,
+      eventName: EVENT_NAME.INITIAL,
+      isMounted: false,
+      isMouseDragActive: false,
+      isTouchDragActive: false,
+      mouseIsMoving: false,
+      startX: 0,
+      startY: 0,
+    };
+  }
+
   public componentDidMount() {
     this.setState({
-      containerWidth: this.containerRef.current.clientWidth,
       containerHeight: this.containerRef.current.clientHeight,
-      isMounted: true
+      containerWidth: this.containerRef.current.clientWidth,
+      isMounted: true,
     });
 
     if (this.props.autofocus) {
       this.containerRef.current.focus();
     }
 
-    window.addEventListener("resize", this.onResize);
+    window.addEventListener('resize', this.onResize);
   }
 
-  public componentDidUpdate(prevProps: CarouselVirtualizedProps) {
-    if (prevProps.slideIndex !== this.props.slideIndex) {
+  public componentDidUpdate(prevProps: ICarouselVirtualizedProps) {
+    if (this.props.slideIndex && prevProps.slideIndex !== this.props.slideIndex) {
       this.setState({ currentIndex: this.props.slideIndex });
       this.scrollToItem(this.props.slideIndex);
     }
   }
 
   public componentWillUnmount() {
-    window.removeEventListener("resize", this.onResize);
+    window.removeEventListener('resize', this.onResize);
     window.cancelAnimationFrame.call(window, this.moveTimer);
     this.moveTimer = null;
+  }
+
+  public render() {
+    const {
+      children,
+      outerClassName,
+      height,
+      initialScrollOffset,
+      innerClassName,
+      itemCount,
+      itemData,
+      itemSize,
+      overscanCount,
+      slideCount,
+      style,
+      outerStyle,
+      width,
+    } = this.props;
+    const dataForRenderer = {
+      containerHeight: this.state.containerHeight,
+      containerWidth: this.state.containerWidth,
+      height,
+      itemData,
+      width,
+    };
+    const calculatedItemSize: number = itemSize
+      ? itemSize
+      : slideCount
+        ? width / slideCount
+        : this.state.containerWidth || 0;
+    const calculatedHeight: number|string = height || this.state.containerHeight || 0;
+    const calculatedWidth: number =
+      itemSize && slideCount
+        ? itemSize * slideCount
+        : width || this.state.containerWidth || 0;
+    const calculatedInitialScrollOffset: number = initialScrollOffset
+      ? initialScrollOffset
+      : (itemSize || this.state.containerWidth) * this.state.currentIndex;
+
+    return (
+      <React.Fragment>
+        {this.props.leftArrow &&
+          this.props.leftArrow({ onClick: this.handleLeftArrowClick })}
+        <div
+          className={outerClassName}
+          onClick={this.handleOnMouseClick}
+          onKeyDown={this.handleOnKeyDown}
+          onMouseDown={this.handleOnMouseDown}
+          onMouseMove={this.handleOnMouseMove}
+          onTouchCancel={this.handleTouchCancel}
+          onTouchEnd={this.handleTouchEnd}
+          onTouchMove={this.handleTouchMove}
+          onTouchStart={this.handleTouchStart}
+          ref={this.containerRef}
+          role='listbox'
+          style={{
+            height: height && typeof height === 'number' ? 'auto' : '100%',
+            width: width ? 'auto' : '100%',
+            ...outerStyle,
+          }}
+        >
+          {this.state.isMounted ? (
+            <Carousel
+              className={innerClassName}
+              direction='horizontal'
+              height={calculatedHeight}
+              initialScrollOffset={calculatedInitialScrollOffset}
+              itemCount={itemCount}
+              itemData={dataForRenderer}
+              itemSize={calculatedItemSize}
+              onItemsRendered={this.onItemsRendered}
+              overscanCount={overscanCount}
+              ref={this.carouselRef}
+              style={{ overflow: 'hidden', ...style }}
+              width={calculatedWidth}
+            >
+              {children}
+            </Carousel>
+          ) : null}
+        </div>
+        {this.props.rightArrow &&
+          this.props.rightArrow({ onClick: this.handleRightArrowClick })}
+      </React.Fragment>
+    );
   }
 
   private onResize() {
     this.throttledResize();
   }
 
-  private throttledResize = throttle(
-    () => {
-      this.setState(
-        {
-          containerWidth: this.containerRef.current.clientWidth,
-          containerHeight: this.containerRef.current.clientHeight,
-          eventName: EVENT_NAME.RESIZE,
-        },
-        () => this.scrollToItem(this.props.slideIndex)
-      );
-    },
-    RESIZE_THROTTLE_THRESHOLD,
-    {
-      leading: false,
-      trailing: true
-    },
-  );
-
   private handleOnKeyDown: React.KeyboardEventHandler = (
-    event: React.KeyboardEvent
+    event: React.KeyboardEvent,
   ) => {
     event.preventDefault();
     event.stopPropagation();
@@ -198,7 +286,7 @@ class CarouselVirtualized extends React.Component<
         EVENT_NAME.KEYDOWN,
       );
     }
-  };
+  }
 
   private handleOnMouseDown: React.MouseEventHandler = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -207,7 +295,7 @@ class CarouselVirtualized extends React.Component<
     }
     event.preventDefault();
     this.onDragStart(event.screenX, true, false);
-  };
+  }
 
   private handleOnMouseMove: React.MouseEventHandler = (event: React.MouseEvent) => {
     if (this.props.disableDrag || !this.state.isMouseDragActive) {
@@ -217,9 +305,9 @@ class CarouselVirtualized extends React.Component<
     event.preventDefault();
     event.persist();
     this.onDragMove(event.screenX);
-  };
+  }
 
-  private handleOnMouseClick: React.MouseEventHandler = () => {
+  private handleOnMouseClick: React.MouseEventHandler = (event: React.MouseEvent) => {
     if (this.props.disableDrag || !this.state.isMouseDragActive) {
       return;
     }
@@ -229,7 +317,7 @@ class CarouselVirtualized extends React.Component<
     }
 
     this.onDragEnd();
-  };
+  }
 
   private handleTouchStart: React.TouchEventHandler = (event: React.TouchEvent) => {
     if (this.props.disableTouch) {
@@ -274,7 +362,7 @@ class CarouselVirtualized extends React.Component<
 
   private onDragMove(screenX: number) {
     this.moveTimer = window.requestAnimationFrame.call(window, () => {
-      this.setState(state => ({
+      this.setState((state) => ({
         deltaX: screenX - state.startX,
         mouseIsMoving: state.isMouseDragActive,
       }));
@@ -288,14 +376,14 @@ class CarouselVirtualized extends React.Component<
       deltaX: 0,
       isMouseDragActive: false,
       isTouchDragActive: false,
-      mouseIsMoving: false
+      mouseIsMoving: false,
     });
   }
 
   private computeNextSlide() {
     const slidesMoved = CarouselVirtualized.slidesMoved(
       this.state.deltaX,
-      this.itemSize()
+      this.itemSize(),
     );
     this.changeSlide(slidesMoved, this.state.eventName);
   }
@@ -303,7 +391,7 @@ class CarouselVirtualized extends React.Component<
   private changeSlide(change: number, eventName: string) {
     const { itemCount } = this.props;
     const adjustedIdx = this.state.currentIndex + change;
-    let newIdx;
+    let newIdx: number;
     if (adjustedIdx >= itemCount) {
       newIdx = 0;
     } else if (adjustedIdx < 0) {
@@ -315,15 +403,15 @@ class CarouselVirtualized extends React.Component<
     this.scrollToItem(newIdx);
   }
 
-  private onItemsRendered({
+  private onItemsRendered = ({
     overscanStartIndex,
     overscanStopIndex,
     visibleStartIndex,
     visibleStopIndex,
-  }) {
-    return this.props.onItemsRendered({
-      eventName: this.state.eventName,
+  }) => {
+    return this.props.onItemsRendered && this.props.onItemsRendered({
       carouselName: this.props.carouselName,
+      eventName: this.state.eventName,
       overscanStartIndex,
       overscanStopIndex,
       visibleStartIndex,
@@ -332,7 +420,7 @@ class CarouselVirtualized extends React.Component<
   }
 
   private scrollToItem(index: number) {
-    this.carouselRef.current.scrollToItem(index, "center");
+    this.carouselRef.current.scrollToItem(index, 'center');
   }
 
   private handleLeftArrowClick() {
@@ -345,95 +433,13 @@ class CarouselVirtualized extends React.Component<
 
   private itemSize() {
     const { itemSize, width, slideCount } = this.props;
+
     return itemSize
       ? itemSize
       : slideCount
-        ? width / slideCount
+        ? width || this.state.containerWidth as number / slideCount
         : this.state.containerWidth || 0;
-  }
-
-  public render() {
-    const {
-      children,
-      outerClassName,
-      height,
-      initialScrollOffset,
-      innerClassName,
-      itemCount,
-      itemData,
-      itemSize,
-      overscanCount,
-      slideCount,
-      style,
-      outerStyle,
-      width
-    } = this.props;
-    const dataForRenderer = {
-      width,
-      height,
-      containerHeight: this.state.containerHeight,
-      containerWidth: this.state.containerWidth,
-      itemData,
-    };
-    const calculatedItemSize: number = itemSize
-      ? itemSize
-      : slideCount
-        ? width / slideCount
-        : this.state.containerWidth || 0;
-    const calculatedHeight: number|string = height || this.state.containerHeight || 0;
-    const calculatedWidth: number =
-      itemSize && slideCount
-        ? itemSize * slideCount
-        : width || this.state.containerWidth || 0;
-    const calculatedInitialScrollOffset: number = initialScrollOffset
-      ? initialScrollOffset
-      : (itemSize || this.state.containerWidth) * this.state.currentIndex;
-
-    return (
-      <React.Fragment>
-        {this.props.leftArrow &&
-          this.props.leftArrow({ onClick: this.handleLeftArrowClick })}
-        <div
-          className={outerClassName}
-          onClick={this.handleOnMouseClick}
-          onKeyDown={this.handleOnKeyDown}
-          onMouseDown={this.handleOnMouseDown}
-          onMouseMove={this.handleOnMouseMove}
-          onTouchCancel={this.handleTouchCancel}
-          onTouchEnd={this.handleTouchEnd}
-          onTouchMove={this.handleTouchMove}
-          onTouchStart={this.handleTouchStart}
-          ref={this.containerRef}
-          role="listbox"
-          style={{
-            width: width ? "auto" : "100%",
-            height: height && typeof height === "number" ? "auto" : "100%",
-            ...outerStyle
-          }}
-        >
-          {this.state.isMounted ? (
-            <Carousel
-              className={innerClassName}
-              direction="horizontal"
-              height={calculatedHeight}
-              initialScrollOffset={calculatedInitialScrollOffset}
-              itemCount={itemCount}
-              itemData={dataForRenderer}
-              itemSize={calculatedItemSize}
-              onItemsRendered={this.onItemsRendered}
-              overscanCount={overscanCount}
-              ref={this.carouselRef}
-              style={{ overflow: "hidden", ...style }}
-              width={calculatedWidth}
-            >
-              {children}
-            </Carousel>
-          ) : null}
-        </div>
-        {this.props.rightArrow &&
-          this.props.rightArrow({ onClick: this.handleRightArrowClick })}
-      </React.Fragment>
-    );
   }
 }
-export default CarouselVirtualized;
+
+export { CarouselVirtualized };
