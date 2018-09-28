@@ -11,7 +11,8 @@
     "benchmark": "jest benchmark",
     "benchmark-watch": "jest benchmark --watch",
     "lint": "tslint --project .",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "now-start": "yarn build && cd examples && yarn && yarn build && yarn start"
   },
   "repository": {
     "type": "git",
