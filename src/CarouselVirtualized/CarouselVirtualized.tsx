@@ -318,7 +318,7 @@ class CarouselVirtualized extends React.Component<
       event.preventDefault();
     }
 
-    this.onDragEnd();
+    this.onDragEnd('mouseDrag');
   }
 
   private handleTouchStart: React.TouchEventHandler = (event: React.TouchEvent) => {
@@ -350,7 +350,7 @@ class CarouselVirtualized extends React.Component<
     if (this.props.disableTouch) {
       return;
     }
-    this.onDragEnd();
+    this.onDragEnd('touchDrag');
   }
 
   private onDragStart(startX: number, isMouseDragActive: boolean, isTouchDragActive: boolean) {
@@ -371,11 +371,12 @@ class CarouselVirtualized extends React.Component<
     });
   }
 
-  private onDragEnd() {
+  private onDragEnd(eventName) {
     window.cancelAnimationFrame.call(window, this.moveTimer);
     this.computeNextSlide();
     this.setState({
       deltaX: 0,
+      eventName,
       isMouseDragActive: false,
       isTouchDragActive: false,
       mouseIsMoving: false,
