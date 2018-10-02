@@ -12,6 +12,7 @@
     "benchmark-watch": "jest benchmark --watch",
     "lint": "tslint --project .",
     "build": "rollup -c",
+    "build-watch": "rollup -c -w",
     "now-start": "yarn build && cd examples && yarn && yarn build && yarn start"
   },
   "repository": {
@@ -32,7 +33,6 @@
   "homepage": "https://github.com/NinoMaj/carousel-virtualized#readme",
   "dependencies": {
     "@types/react-window": "^1.1.0",
-    "dom": "0.0.3",
     "lodash.throttle": "^4.1.1",
     "react": "16.5.2",
     "react-window": "^1.1.2"

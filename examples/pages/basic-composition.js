@@ -1,5 +1,5 @@
 import React from 'react';
-import { CarouselVirtualized } from '../../dist/index.esm.js';
+import { Carousel, Slider } from '../../dist/index.esm.js';
 
 const slideStyles = {
   display: 'flex',
@@ -44,7 +44,7 @@ const slide = ({ index, isScrolling, style, data }) => (
   <div style={style}>
     <div style={slideStyles}>
       <div style={slideNumberStyles}>{index}</div>
-      <img src={'https://picsum.photos/800/400/?random'} alt="placehoder" />
+      <img style={{ maxWidth: '100%' }} src={'https://picsum.photos/800/400/?random'} alt="placehoder" />
       <button
         onClick={() => alert('TODO')}
         style={buttonLeft}>⇦</button>
@@ -55,32 +55,24 @@ const slide = ({ index, isScrolling, style, data }) => (
   </div>
 );
 
-class Basic extends React.Component {
-  constructor(props) {
-    super(props);
+const BasicComposition = () => (
+  <div style={{ width: '800px', height: '400px', margin: '50px auto 0' }}>
+    Try swiping cause arrows aren't working yet :)
+    <Carousel
+      itemCount={500}
+      overscanCount={2}
+    >
+      {({ sliderProps, enableTouch}) => (
+        <Slider
+          {...sliderProps}
+          {...enableTouch}
+          width={600}
+        >
+          {slide}
+        </Slider>
+      )}
+    </Carousel>
+  </div>
+)
 
-    this.state = { currentIndex: 0 };
-  }
-
-  handlePositionChange = ({ newIndex }) => {
-    this.setState({ currentIndex: newIndex });
-  }
-
-  render() {
-    return (
-    <div style={{ width: '800px', height: '400px', margin: '50px auto 0' }}>
-      <CarouselVirtualized
-        autofocus
-        itemCount={500}
-        onPositionChange={this.handlePositionChange}
-        overscanCount={1}
-        currentIndex={this.state.currentIndex}
-      >
-        {slide}
-      </CarouselVirtualized>
-    </div>
-    );
-  }
-}
-
-export default Basic
+export default BasicComposition

@@ -18,7 +18,10 @@ export default [{
       tsconfig: './tsconfig.base.json',
     }),
     uglify(),
-  ]
+  ],
+  watch: {
+    chokidar: false
+  },
 }, {
   input: './src/index.ts',
   output: [
@@ -33,5 +36,8 @@ export default [{
       typescript: require('typescript'),
       tsconfig: './tsconfig.base.json',
     }),
-  ]
+  ],
+  watch: {
+    chokidar: false
+  },
 }]
