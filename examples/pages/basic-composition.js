@@ -1,12 +1,5 @@
 import React from 'react';
-import { CarouselVirtualized } from '../../dist/index.esm.js';
-
-const containerStyles = {
-  margin: '50px auto 0',
-  // width: '800px',
-  maxWidth: '80%',
-  height: '400px',
-};
+import { Carousel, Slider } from '../../dist/index.esm.js';
 
 const slideStyles = {
   display: 'flex',
@@ -26,15 +19,11 @@ const slideNumberStyles = {
   height: '100%',
 };
 
-const imageStyles = {
-  maxWidth: '100%'
-}
-
 const buttonStyles = {
   position: 'absolute',
   top: '50%',
   transform: 'translateY(-50%)',
-  // height: '100%',
+  height: '100%',
   color: "#eeeeee",
   fontSize: "2em",
   backgroundColor: 'rgba(230,230,230,.2)',
@@ -55,12 +44,10 @@ const slide = ({ index, isScrolling, style, data }) => (
   <div style={style}>
     <div style={slideStyles}>
       <div style={slideNumberStyles}>{index}</div>
-      <img
-        alt="placehoder"
-        src={'https://picsum.photos/800/400/?random'}
-        style={imageStyles}
-      />
-      
+      <img style={{ maxWidth: '100%' }} src={'https://picsum.photos/800/400/?random'} alt="placehoder" />
+      <button
+        onClick={() => alert('TODO')}
+        style={buttonLeft}>⇦</button>
       <button
         onClick={() => alert('TODO')}
         style={buttonRight}>⇨</button>
@@ -68,35 +55,24 @@ const slide = ({ index, isScrolling, style, data }) => (
   </div>
 );
 
-class Basic extends React.Component {
-  constructor(props) {
-    super(props);
+const BasicComposition = () => (
+  <div style={{ width: '800px', height: '400px', margin: '50px auto 0' }}>
+    Try swiping cause arrows aren't working yet :)
+    <Carousel
+      itemCount={500}
+      overscanCount={2}
+    >
+      {({ sliderProps, enableTouch}) => (
+        <Slider
+          {...sliderProps}
+          {...enableTouch}
+          width={600}
+        >
+          {slide}
+        </Slider>
+      )}
+    </Carousel>
+  </div>
+)
 
-    this.state = { currentIndex: 0 };
-  }
-
-  handlePositionChange = ({ newIndex }) => {
-    this.setState({ currentIndex: newIndex });
-  }
-
-  leftArrow = ({ onClick }) => <button onClick={onClick} style={buttonLeft}>⇦</button>
-
-  render() {
-    return (
-    <div style={containerStyles}>
-      <CarouselVirtualized
-        autofocus
-        itemCount={500}
-        onPositionChange={this.handlePositionChange}
-        overscanCount={1}
-        currentIndex={this.state.currentIndex}
-        leftArrow={this.leftArrow}
-      >
-        {slide}
-      </CarouselVirtualized>
-    </div>
-    );
-  }
-}
-
-export default Basic
+export default BasicComposition

@@ -1,21 +1,19 @@
-import throttle from 'lodash.throttle';
-import { CarouselVirtualized } from './CarouselVirtualized/CarouselVirtualized';
-import { KEYBOARD_EVENT } from './enums/keyboardEvent';
+import { Carousel } from './components/Carousel/Carousel';
+import { CarouselVirtualized } from './components/CarouselVirtualized/CarouselVirtualized';
+import { Slider } from './components/Slider/Slider';
+import { Alignment } from './enums/Alignment';
+import { ArrowStep } from './enums/ArrowStep';
+import { Direction } from './enums/Direction';
+import { EventName } from './enums/EventName';
+import { KeyboardButton } from './enums/KeyboardButton';
 
-const resize = throttle(() => {
-  // tslint:disable-next-line:no-console
-  console.log('throttle');
-}, 500, { leading: false, trailing: true });
-
-resize();
-resize();
-resize();
-resize();
-resize();
-resize();
-resize();
-resize();
-resize();
-resize();
-
-export { CarouselVirtualized, KEYBOARD_EVENT };
+export {
+  Alignment,
+  ArrowStep,
+  Carousel,
+  Direction,
+  EventName,
+  Slider,
+  KeyboardButton,
+  CarouselVirtualized,
+};

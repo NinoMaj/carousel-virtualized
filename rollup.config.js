@@ -18,7 +18,7 @@ export default [{
       tsconfig: './tsconfig.base.json',
     }),
     uglify(),
-  ]
+  ],
 }, {
   input: './src/index.ts',
   output: [
@@ -33,5 +33,5 @@ export default [{
       typescript: require('typescript'),
       tsconfig: './tsconfig.base.json',
     }),
-  ]
+  ],
 }]
