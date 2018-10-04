@@ -8,29 +8,25 @@ After trying most of carousels out there, we couldn't find one that would allow 
 ...
 
 # Todo
-- [] utilize render prop
-- [] add animation
-- [] add documentation
-- [] make demos on codesandbox
-- [] add variable items in carousel
-- [] tests
-- [] a11y
-- [] mouse, touch and keyboard navigation
-
-Discuss before implementation:
-- [] wrapAround - we probably need this
-- [] autoplay - should we support this
-- [] dots  - should we support this
-- [] outerTagName and innerTagName, now is always div
-- [] lockOnWindowScroll and documentScroll - do we need this
+- [ ] add documentation
+- [ ] make demos on codesandbox
+- [ ] tests
+- [ ] Improve a11y
+- [ ] autoplay - should we support this
+- [ ] dots  - should we support this
+- [ ] Finish modular architecture
+- [ ] add variable width items in carousel
 
 # Done
-[x] auto container sizer
-[x] basic mouse, touch and keyboard navigation (improvements needed)
-[x] auto resizes
-[x] convert to typescript
-[x] build/bundling
-[x] basic example
+- [x] auto container sizer
+- [x] basic mouse, touch and keyboard navigation (improvements needed)
+- [x] auto resizes
+- [x] convert to typescript
+- [x] build/bundling
+- [x] basic example
+- [x] mouse, touch and keyboard navigation
+- [x] add animation
+
 
 
 
