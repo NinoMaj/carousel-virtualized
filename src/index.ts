@@ -1,8 +1,19 @@
-// tslint:disable-next-line:no-require-imports
-const throttle = require('lodash.throttle');
 import { Carousel } from './components/Carousel/Carousel';
-import { CarouselVirtualized } from './components/CarouselVirtualized';
+import { CarouselVirtualized } from './components/CarouselVirtualized/CarouselVirtualized';
 import { Slider } from './components/Slider/Slider';
-import { KEYBOARD_EVENT } from './enums/keyboardEvent';
+import { Alignment } from './enums/Alignment';
+import { ArrowStep } from './enums/ArrowStep';
+import { Direction } from './enums/Direction';
+import { EventName } from './enums/EventName';
+import { KeyboardButton } from './enums/KeyboardButton';
 
-export { Carousel, Slider, KEYBOARD_EVENT, CarouselVirtualized };
+export {
+  Alignment,
+  ArrowStep,
+  Carousel,
+  Direction,
+  EventName,
+  Slider,
+  KeyboardButton,
+  CarouselVirtualized,
+};

@@ -1,24 +1,18 @@
-import throttle from 'lodash.throttle';
+import throttle from 'lodash/throttle';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { FixedSizeList } from 'react-window';
 
 import { RESIZE_THROTTLE_THRESHOLD } from '../../consts';
-import { DIRECTION } from '../../enums/direction';
-import { EVENT_NAME } from '../../enums/eventName';
-import { KEYBOARD_EVENT } from '../../enums/keyboardEvent';
+import { Direction } from '../../enums/Direction';
+import { EventName } from '../../enums/EventName';
+import { KeyboardEvent } from '../../enums/KeyboardEvent';
 
 declare const window: Window;
 
 interface IRenderComponentProps<T = any> {
   [key: string]: T;
 }
-//  {
-//   data: any;
-//   index: number;
-//   isScrolling?: boolean;
-//   style: object;
-// }
 
 type RenderComponent = (props: IRenderComponentProps) => React.ReactNode;
 
@@ -127,7 +121,7 @@ class Carousel extends React.Component<
       if (this.containerRef) {
         this.setState(
           {
-            eventName: EVENT_NAME.RESIZE,
+            eventName: EventName.Resize,
             height: this.containerRef.offsetHeight,
             width: this.containerRef.offsetWidth,
           },
@@ -148,7 +142,7 @@ class Carousel extends React.Component<
     this.state = {
       currentIndex: this.props.currentIndex || 0,
       deltaX: 0,
-      eventName: EVENT_NAME.INITIAL,
+      eventName: EventName.Initial,
       height: 0,
       isMounted: false,
       isMouseDragActive: false,
@@ -258,14 +252,14 @@ class Carousel extends React.Component<
     event.preventDefault();
     event.stopPropagation();
     if (
-      event.which === KEYBOARD_EVENT.LEFT_ARROW ||
-      event.which === KEYBOARD_EVENT.RIGHT_ARROW
+      event.which === KeyboardEvent.LeftArrow ||
+      event.which === KeyboardEvent.RightArrow
     ) {
       this.changeSlide(
-        event.which === KEYBOARD_EVENT.LEFT_ARROW
-          ? DIRECTION.LEFT
-          : DIRECTION.RIGHT,
-        EVENT_NAME.KEYDOWN,
+        event.which === KeyboardEvent.LeftArrow
+          ? Direction.Left
+          : Direction.Right,
+        EventName.KeyboardArrows,
       );
     }
   }
@@ -400,14 +394,6 @@ class Carousel extends React.Component<
       visibleStopIndex,
     });
   }
-
-  // private handleLeftArrowClick() {
-  //   this.changeSlide(DIRECTION.LEFT, EVENT_NAME.LEFT_ARROW_CLICK);
-  // }
-
-  // private handleRightArrowClick() {
-  //   this.changeSlide(DIRECTION.RIGHT, EVENT_NAME.RIGHT_ARROW_CLICK);
-  // }
 }
 
 export { Carousel };

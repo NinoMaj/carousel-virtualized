@@ -5,6 +5,7 @@
     "no-implicit-dependencies": [true, "dev"],
     "no-redundant-jsdoc": false,
     "no-reserved-keywords": false,
+    "no-submodule-imports": false,
     "no-unsafe-any": false,
     "prefer-object-spread": false,
     "promise-function-async": false,

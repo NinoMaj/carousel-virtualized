@@ -1,4 +1,0 @@
-export enum KEYBOARD_EVENT {
-  LEFT_ARROW = 37,
-  RIGHT_ARROW = 39,
-}

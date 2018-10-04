@@ -19,9 +19,6 @@ export default [{
     }),
     uglify(),
   ],
-  watch: {
-    chokidar: false
-  },
 }, {
   input: './src/index.ts',
   output: [
@@ -37,7 +34,4 @@ export default [{
       tsconfig: './tsconfig.base.json',
     }),
   ],
-  watch: {
-    chokidar: false
-  },
 }]
