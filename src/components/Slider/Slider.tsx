@@ -9,7 +9,7 @@ interface ISliderProps {
   autofocus?: boolean;
   carouselName?: string;
   carouselRef: React.RefObject<FixedSizeList>;
-  children: React.ComponentType<ListChildComponentProps>;
+  children: React.ReactNode;
   currentIndex: number;
   height: string | number;
   initialScrollOffset?: number;
@@ -34,10 +34,10 @@ interface ISliderProps {
   onTouchMove?(): any;
   onTouchStart?(): any;
   onItemsRendered?(items: any): any;
-  setContainerRef(): void;
+  setContainerRef?(): void;
 }
 
-class Slider extends React.Component<
+export class Slider extends React.Component<
   ISliderProps
 > {
   // TODO: align PropTypes with Typescript types
@@ -144,5 +144,3 @@ class Slider extends React.Component<
     }
   }
 }
-
-export { Slider };
