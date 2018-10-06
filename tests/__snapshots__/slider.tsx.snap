@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Slider is rendered 1`] = `
+<div
+  role="listbox"
+  style={
+    Object {
+      "height": 100,
+      "width": 100,
+    }
+  }
+>
+  <div
+    onScroll={[Function]}
+    style={
+      Object {
+        "WebkitOverflowScrolling": "touch",
+        "height": 100,
+        "overflow": "auto",
+        "position": "relative",
+        "width": 100,
+        "willChange": "transform",
+      }
+    }
+  >
+    <div
+      style={
+        Object {
+          "height": "100%",
+          "pointerEvents": "",
+          "width": 100,
+        }
+      }
+    >
+      <div>
+        slide
+      </div>
+    </div>
+  </div>
+</div>
+`;
