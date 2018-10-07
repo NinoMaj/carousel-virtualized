@@ -13,6 +13,7 @@ import { Direction } from '../../enums/Direction';
 import { Easing } from '../../enums/Easing';
 import { EventName } from '../../enums/EventName';
 import { KeyboardButton } from '../../enums/KeyboardButton';
+import { OnItemsRendered } from '../../typings/OnItemsRendered';
 
 declare const window: Window;
 
@@ -34,6 +35,7 @@ interface ICarouselVirtualizedProps {
   itemCount: number;
   itemData?: any;
   itemSize?: number;
+  onItemsRendered: OnItemsRendered;
   outerClassName?: string;
   outerStyle?: object;
   overscanCount?: number;
@@ -44,7 +46,6 @@ interface ICarouselVirtualizedProps {
   easing?(t): number;
   leftArrow?(onClick: any): any; // TODO: add type
   onAnimationComplete?(): any;
-  onItemsRendered?(items: any): any; // TODO: add type
   onEvent({ newIndex, eventName }: { newIndex: number; eventName: string }): any;
   rightArrow?(onClick: any): any; // TODO: add type
 }
