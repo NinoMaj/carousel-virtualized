@@ -1,10 +1,7 @@
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import {
-  FixedSizeList as Carousel,
-  ListChildComponentProps,
-} from 'react-window';
+import { FixedSizeList as Carousel } from 'react-window';
 
 import { RESIZE_THROTTLE_THRESHOLD } from '../../consts';
 import { Alignment } from '../../enums/Alignment';
@@ -17,13 +14,15 @@ import { OnItemsRendered } from '../../typings/OnItemsRendered';
 
 declare const window: Window;
 
+import { RenderComponent } from '../../typings/RenderComponent';
+
 interface ICarouselVirtualizedProps {
   alignment?: Alignment;
   animationDuration?: number;
   arrowStep?: string | number;
   arrowStepOffset?: number;
   carouselName?: string;
-  children: React.ComponentType<ListChildComponentProps>;
+  children: RenderComponent<unknown>;
   currentIndex?: number;
   disableAnimation?: boolean | number;
   disableMouseDrag?: boolean;
@@ -35,7 +34,7 @@ interface ICarouselVirtualizedProps {
   itemCount: number;
   itemData?: any;
   itemSize?: number;
-  onItemsRendered: OnItemsRendered;
+  onItemsRendered?: OnItemsRendered;
   outerClassName?: string;
   outerStyle?: object;
   overscanCount?: number;
@@ -44,10 +43,10 @@ interface ICarouselVirtualizedProps {
   width?: number;
   wrapAround?: boolean;
   easing?(t): number;
-  leftArrow?(onClick: any): any; // TODO: add type
-  onAnimationComplete?(): any;
-  onEvent({ newIndex, eventName }: { newIndex: number; eventName: string }): any;
-  rightArrow?(onClick: any): any; // TODO: add type
+  leftArrow?(onClick: unknown): unknown; // TODO: add type
+  onAnimationComplete?(): unknown;
+  onEvent?({ newIndex, eventName }: { newIndex: number; eventName: string }): unknown;
+  rightArrow?(onClick: unknown): unknown; // TODO: add type
 }
 
 interface ICarouselVirtualizedState {
@@ -71,7 +70,7 @@ interface ISlidesMoved {
   width?: number | null;
 }
 
-class CarouselVirtualized extends React.Component<
+class CarouselVirtualized extends React.PureComponent<
   ICarouselVirtualizedProps,
   ICarouselVirtualizedState
 > {
@@ -108,7 +107,7 @@ class CarouselVirtualized extends React.Component<
     wrapAround: PropTypes.bool,
   };
 
-  public static defaultProps: Partial<ICarouselVirtualizedProps> = {
+  public static defaultProps = {
     alignment: Alignment.Center,
     animationDuration: 500,
     arrowStep: 1,
@@ -589,14 +588,10 @@ class CarouselVirtualized extends React.Component<
   }
 
   private onEvent(change: number, eventName: string) {
-    const { currentIndex = 0 } = this.props;
+    const { currentIndex = 0, onEvent = () => { return; } } = this.props;
     const adjustedIdx = currentIndex + change;
     const newIndex = this.boundIndex(adjustedIdx);
-    this.props.onEvent({
-      eventName,
-      newIndex,
-    });
-    this.props.onEvent({ newIndex, eventName });
+    onEvent({ newIndex, eventName });
   }
 
   private onItemsRendered = ({
@@ -628,7 +623,7 @@ class CarouselVirtualized extends React.Component<
     }
   }
 
-  private handleLeftArrowClick() {
+  private handleLeftArrowClick = () => {
     const { arrowStep = 1, arrowStepOffset = 0 } = this.props;
     const slidesMoved = CarouselVirtualized.slidesMoved({
       arrowClick: true,
@@ -640,7 +635,7 @@ class CarouselVirtualized extends React.Component<
     this.onEvent(slidesMoved * Direction.Left, EventName.LeftArrowClick);
   }
 
-  private handleRightArrowClick() {
+  private handleRightArrowClick = () => {
     const { arrowStep = 1, arrowStepOffset = 0 } = this.props;
     const slidesMoved = CarouselVirtualized.slidesMoved({
       arrowClick: true,
