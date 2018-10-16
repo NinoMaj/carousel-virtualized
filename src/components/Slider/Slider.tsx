@@ -1,15 +1,14 @@
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import {
-  FixedSizeList,
-  ListChildComponentProps,
-} from 'react-window';
+import { FixedSizeList } from 'react-window';
+
+import { RenderComponent } from '../../typings/RenderComponent';
 
 interface ISliderProps {
   autofocus?: boolean;
   carouselName?: string;
   carouselRef: React.RefObject<FixedSizeList>;
-  children: React.ReactNode;
+  children: RenderComponent<unknown>;
   currentIndex: number;
   height: string | number;
   initialScrollOffset?: number;

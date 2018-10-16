@@ -35,6 +35,40 @@ After trying most of carousels out there, we couldn't find one that would allow 
   * [License](#-license)
 
 ## Basic usage
+```javascript
+class Basic extends React.Component {
+  this.state = { currentIndex: 0 };
+
+  handleOnEvent = ({ newIndex }) => {
+    this.setState({ currentIndex: newIndex });
+  }
+
+  leftArrow = ({ onClick }) => <button onClick={onClick}>Left</button>
+  rightArrow = ({ onClick }) => <button onClick={onClick}>Right</button>
+
+  render() {
+    return (
+    <div style={containerStyles}>
+      <CarouselVirtualized
+        itemCount={500}
+        onEvent={this.handleOnEvent}
+        currentIndex={this.state.currentIndex}
+        leftArrow={this.leftArrow}
+        rightArrow={this.rightArrow}
+      >
+        {slide}
+      </CarouselVirtualized>
+    </div>
+    );
+  }
+}
+
+const slide = ({ style }) => (
+  <div style={style}>
+    <img src='https://picsum.photos/800/400/?random' />
+  </div>
+);
+```
 
 ## Advance usage
 
@@ -68,6 +102,7 @@ After trying most of carousels out there, we couldn't find one that would allow 
 | onEvent | [function] | () => {} | No | Function that will be called when event is triggers. Function will recieve object with eventName property and newIndex that should be used as next currentIndex.
 | onItemsRendered | [function] | () => {} | No | Function that will be envoked when new slides are rendered on the screen. Function will recieve single argument object with following properties: carouselName, eventName (that causes new render), visibleStartIndex (first visible slide), visibleStopIndex (last visible slide), overscanStartIndex and overscanStopIndex.
 | outerClassName | [string] | undefined | No | Optional CSS class that will be applied to carousel's container.
+| outerRef | [object&#124;function ] | undefined | No | Ref to attach to carousel's container.
 | outerStyle | [object] | empty object | No | Inline style that will be applied to carousel's container.
 | overscanCount | [number] | 1 | No | The number of slides to render outside of the visible area. This property can be important for two reasons:
 - Overscanning by one slide allows the tab key to focus on the next (not yet visible) slide.

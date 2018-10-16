@@ -7,9 +7,9 @@
   "typings": "dist/index.d.ts",
   "scripts": {
     "test": "jest --coverage",
-    "watch": "jest --watch --coverage",
-    "benchmark": "jest benchmark",
-    "benchmark-watch": "jest benchmark --watch",
+    "test-watch": "jest --watch --coverage",
+    "test-benchmark": "jest benchmark",
+    "test-benchmark-watch": "jest benchmark --watch",
     "lint": "tslint --project .",
     "build": "rollup -c",
     "build-watch": "rollup -c -w",
@@ -45,7 +45,9 @@
     "@types/react-test-renderer": "^16.0.3",
     "jest": "^23.6.0",
     "prop-types": "^15.6.2",
+    "react-dom": "^16.5.2",
     "react-test-renderer": "^16.5.2",
+    "react-testing-library": "^5.2.0",
     "rollup": "^0.66.4",
     "rollup-plugin-typescript2": "^0.17.1",
     "rollup-plugin-uglify": "^6.0.0",
@@ -57,17 +59,22 @@
     "react": ">=15"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "src/components/**/*.{ts,tsx}"
+    ],
     "coveragePathIgnorePatterns": [
       "/test/",
       "/node_modules/",
-      "/docs/"
+      "/examples/"
     ],
     "moduleFileExtensions": [
       "ts",
       "tsx",
       "js"
     ],
-    "testMatch": ["**/tests/**/*.ts?(x)"],
+    "testMatch": [
+      "**/tests/**/*.ts?(x)"
+    ],
     "globals": {
       "ts-jest": {
         "diagnostics": {

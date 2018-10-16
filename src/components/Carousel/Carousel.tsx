@@ -6,7 +6,7 @@ import { FixedSizeList } from 'react-window';
 import { RESIZE_THROTTLE_THRESHOLD } from '../../consts';
 import { Direction } from '../../enums/Direction';
 import { EventName } from '../../enums/EventName';
-import { KeyboardEvent } from '../../enums/KeyboardEvent';
+import { KeyboardButton } from '../../enums/KeyboardButton';
 
 declare const window: Window;
 
@@ -246,20 +246,20 @@ class Carousel extends React.Component<
         : this.state.width;
   }
 
-  private handleOnKeyDown: React.KeyboardEventHandler = (
+  private handleOnKeyDown = (
     event: React.KeyboardEvent,
   ) => {
     event.preventDefault();
     event.stopPropagation();
     if (
-      event.which === KeyboardEvent.LeftArrow ||
-      event.which === KeyboardEvent.RightArrow
+      event.which === KeyboardButton.LeftArrow ||
+      event.which === KeyboardButton.RightArrow
     ) {
       this.changeSlide(
-        event.which === KeyboardEvent.LeftArrow
+        event.which === KeyboardButton.LeftArrow
           ? Direction.Left
           : Direction.Right,
-        EventName.KeyboardArrows,
+        EventName.KeyDown,
       );
     }
   }
