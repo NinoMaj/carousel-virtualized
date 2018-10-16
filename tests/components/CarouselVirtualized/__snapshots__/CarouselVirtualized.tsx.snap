@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CarouselVirtualized should fire onEvent with new index when arrow is clicked 1`] = `
+Array [
+  Array [
+    Object {
+      "eventName": "rightarrowclick",
+      "newIndex": 6,
+    },
+  ],
+]
+`;
+
+exports[`CarouselVirtualized should render current index 1`] = `
+Array [
+  Array [
+    Object {
+      "carouselName": "",
+      "eventName": "initial",
+      "overscanStartIndex": 4,
+      "overscanStopIndex": 7,
+      "visibleStartIndex": 5,
+      "visibleStopIndex": 6,
+    },
+  ],
+]
+`;
+
+exports[`CarouselVirtualized should render slides 1`] = `
+Array [
+  Array [
+    Object {
+      "carouselName": "",
+      "eventName": "initial",
+      "overscanStartIndex": 0,
+      "overscanStopIndex": 3,
+      "visibleStartIndex": 0,
+      "visibleStopIndex": 2,
+    },
+  ],
+]
+`;

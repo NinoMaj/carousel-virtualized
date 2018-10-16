@@ -2,28 +2,29 @@ import React from 'react';
 import { CarouselVirtualized } from '../../dist/index.esm.js';
 
 const containerStyles = {
+  height: '400px',
   margin: '50px auto 0',
   maxWidth: '80%',
-  height: '400px',
   position: 'relative',
+  width: '800px',
 };
 
 const slideStyles = {
+  alignItems: 'center',
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center',
   position: 'relative',
 };
 
 const slideNumberStyles = {
-  position: 'absolute',
-  display: 'flex',
-  justifyContent: 'center',
   alignItems: 'center',
-  fontSize: "6em",
   color: 'white',
-  width: '100%',
+  display: 'flex',
+  fontSize: "6em",
   height: '100%',
+  justifyContent: 'center',
+  position: 'absolute',
+  width: '100%',
 };
 
 const imageStyles = {
@@ -31,22 +32,19 @@ const imageStyles = {
 }
 
 const buttonStyles = {
+  backgroundColor: 'rgba(230,230,230,.2)',
+  border: '0',
+  color: "#eeeeee",
+  cursor: 'pointer',
+  fontSize: "2em",
   position: 'absolute',
   top: '50%',
   transform: 'translateY(-50%)',
-  color: "#eeeeee",
-  fontSize: "2em",
-  backgroundColor: 'rgba(230,230,230,.2)',
-  border: '0',
-  cursor: 'pointer',
   zIndex: 1,
 };
 
 const buttonLeft = { ...buttonStyles, left: '0px' };
 const buttonRight = { ...buttonStyles, right: '0px' };
-
-const RIGHT = '-1';
-const LEFT = '+1';
 
 const slide = ({ index, style }) => (
   <div style={style}>
@@ -54,7 +52,7 @@ const slide = ({ index, style }) => (
       <div style={slideNumberStyles}>{index}</div>
       <img
         alt="placehoder"
-        src={'https://picsum.photos/800/400/?random'}
+        src='https://picsum.photos/800/400/?random'
         style={imageStyles}
       />
     

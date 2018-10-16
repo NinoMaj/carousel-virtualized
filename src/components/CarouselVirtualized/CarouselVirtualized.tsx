@@ -16,6 +16,14 @@ declare const window: Window;
 
 import { RenderComponent } from '../../typings/RenderComponent';
 
+type IArrowButton = ({
+  onClick,
+  currentIndex,
+}: {
+  onClick: any;
+  currentIndex: number;
+}) => any;
+
 interface ICarouselVirtualizedProps {
   alignment?: Alignment;
   animationDuration?: number;
@@ -31,22 +39,23 @@ interface ICarouselVirtualizedProps {
   height?: string | number;
   initialScrollOffset?: number;
   innerClassName?: string;
+  innerStyle?: object;
   itemCount: number;
   itemData?: any;
   itemSize?: number;
+  leftArrow?: IArrowButton;
   onItemsRendered?: OnItemsRendered;
   outerClassName?: string;
+  outerRef?: any;
   outerStyle?: object;
   overscanCount?: number;
+  rightArrow?: IArrowButton;
   slideCount?: number;
-  innerStyle?: object;
   width?: number;
   wrapAround?: boolean;
   easing?(t): number;
-  leftArrow?(onClick: unknown): unknown; // TODO: add type
   onAnimationComplete?(): unknown;
   onEvent?({ newIndex, eventName }: { newIndex: number; eventName: string }): unknown;
-  rightArrow?(onClick: unknown): unknown; // TODO: add type
 }
 
 interface ICarouselVirtualizedState {
@@ -99,6 +108,7 @@ class CarouselVirtualized extends React.PureComponent<
     onEvent: PropTypes.func,
     onItemsRendered: PropTypes.func,
     outerClassName: PropTypes.string,
+    outerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
     outerStyle: PropTypes.object,
     overscanCount: PropTypes.number,
     rightArrow: PropTypes.func,
@@ -130,6 +140,7 @@ class CarouselVirtualized extends React.PureComponent<
     onEvent: () => { return; },
     onItemsRendered: () => { return; },
     outerClassName: undefined,
+    outerRef: undefined,
     outerStyle: {},
     overscanCount: 1,
     rightArrow: () => { return; },
@@ -154,7 +165,7 @@ class CarouselVirtualized extends React.PureComponent<
           slidesMoved = Math.round((width as number / itemSize) + arrowStepOffset as number);
           break;
         default:
-        slidesMoved = arrowStep;
+          slidesMoved = arrowStep;
       }
 
       return slidesMoved;
@@ -174,7 +185,7 @@ class CarouselVirtualized extends React.PureComponent<
   private moveTimer: number | null = null;
 
   // Refs
-  private containerRef = React.createRef<HTMLDivElement>();
+  private containerRef: HTMLDivElement | null = null;
   private carouselRef = React.createRef<Carousel>();
 
   // Offset for animation
@@ -183,18 +194,7 @@ class CarouselVirtualized extends React.PureComponent<
   private animationStartTime: number = 0;
 
   private throttledResize = throttle(
-    () => {
-      if (this.containerRef.current) {
-        this.setState(
-          {
-            containerHeight: this.containerRef.current.offsetHeight,
-            containerWidth: this.containerRef.current.offsetWidth,
-            eventName: EventName.Resize,
-          },
-          () => this.scrollToItem(this.props.currentIndex || 0),
-        );
-      }
-    },
+    () => this.onResize(),
     RESIZE_THROTTLE_THRESHOLD,
     {
       leading: false,
@@ -219,17 +219,17 @@ class CarouselVirtualized extends React.PureComponent<
   }
 
   public componentDidMount() {
-    if (this.containerRef.current) {
+    if (this.containerRef) {
       this.setState({
-        containerHeight: this.containerRef.current.offsetHeight,
-        containerWidth: this.containerRef.current.offsetWidth,
+        containerHeight: this.containerRef.offsetHeight,
+        containerWidth: this.containerRef.offsetWidth,
         isMounted: true,
       }, () => {
         this.setInitiallOffset();
       });
     }
 
-    window.addEventListener(EventName.Resize, this.onResize);
+    window.addEventListener(EventName.Resize, this.onThrottleResize);
 
     if (this.props.enableKeyboard) {
       document.addEventListener(EventName.KeyDown, this.handleKeyDown);
@@ -287,27 +287,24 @@ class CarouselVirtualized extends React.PureComponent<
       itemData,
       width,
     };
-    const calculatedItemSize: number = itemSize
-      ? itemSize
-      : slideCount
-        ? (width || this.state.containerWidth) as number / slideCount
-        : this.state.containerWidth || 0;
+
+    const calculatedItemSize: number = itemSize || (slideCount
+      ? (width || this.state.containerWidth || 0) / slideCount
+      : this.state.containerWidth || 0);
     const calculatedHeight: number|string = height || this.state.containerHeight || 0;
-    const calculatedWidth: number =
-      calculatedItemSize && slideCount
-        ? calculatedItemSize * slideCount
-        : width || this.state.containerWidth || 0;
-    const calculatedInitialScrollOffset: number = initialScrollOffset
-      ? initialScrollOffset
-      : calculatedItemSize * currentIndex;
+    const calculatedWidth: number = calculatedItemSize && slideCount
+      ? calculatedItemSize * slideCount
+      : width || this.state.containerWidth || 0;
+    const calculatedInitialScrollOffset: number = initialScrollOffset || this.itemSize * currentIndex;
 
     return (
       <React.Fragment>
         {leftArrow &&
-          leftArrow({ onClick: this.handleLeftArrowClick })}
+          leftArrow({ onClick: this.handleLeftArrowClick, currentIndex })}
         <div
           className={outerClassName}
-          draggable={true}
+          data-testid='carouselVirtualizedContainer'
+          draggable
           onDragStart={this.handleOnDragStart}
           onMouseMove={this.handleOnMouseMove}
           onMouseUp={this.handleOnMouseUp}
@@ -315,7 +312,7 @@ class CarouselVirtualized extends React.PureComponent<
           onTouchEnd={this.handleTouchEnd}
           onTouchMove={this.handleTouchMove}
           onTouchStart={this.handleTouchStart}
-          ref={this.containerRef}
+          ref={this.setContainerRefs}
           role='listbox'
           style={{
             height: height && typeof height === 'number' ? 'auto' : '100%',
@@ -326,6 +323,7 @@ class CarouselVirtualized extends React.PureComponent<
           {this.state.isMounted ? (
             <Carousel
               className={innerClassName}
+              data-testid='carouselVirtualized'
               direction='horizontal'
               height={calculatedHeight}
               initialScrollOffset={calculatedInitialScrollOffset}
@@ -344,9 +342,24 @@ class CarouselVirtualized extends React.PureComponent<
           ) : null}
         </div>
         {rightArrow &&
-          rightArrow({ onClick: this.handleRightArrowClick })}
+          rightArrow({ onClick: this.handleRightArrowClick, currentIndex })}
       </React.Fragment>
     );
+  }
+
+  private setContainerRefs = (ref) => {
+    const { outerRef } = this.props;
+    this.containerRef = ref;
+
+    if (typeof outerRef === 'function') {
+      outerRef(ref);
+    } else if (
+      outerRef !== null &&
+      typeof outerRef === 'object' &&
+      outerRef.hasOwnProperty('current')
+    ) {
+      outerRef.current = ref as HTMLDivElement;
+    }
   }
 
   private shouldAnimate(disableAnimation, currentIndex, previousIndex) {
@@ -368,7 +381,7 @@ class CarouselVirtualized extends React.PureComponent<
 
     const { alignment = Alignment.Center, currentIndex = 0 } = this.props;
     const alignmentOffSet = this.calucateAlignmentOffSet(alignment);
-    this.scrollOffsetFinal = this.boundScrollPosition((currentIndex * this.itemSize()) - alignmentOffSet);
+    this.scrollOffsetFinal = this.boundScrollPosition((currentIndex * this.itemSize) - alignmentOffSet);
     this.animationStartTime = performance.now();
     this.animate();
   }
@@ -399,7 +412,7 @@ class CarouselVirtualized extends React.PureComponent<
   }
 
   private calucateAlignmentOffSet(alignment: Alignment) {
-    if (this.state.containerWidth === this.itemSize()) {
+    if (this.width === this.itemSize) {
       return 0;
     }
 
@@ -409,10 +422,10 @@ class CarouselVirtualized extends React.PureComponent<
         alignmentOffSet = 0;
         break;
       case Alignment.Center:
-        alignmentOffSet = this.state.containerWidth as number / 2;
+        alignmentOffSet = this.width as number / 2;
         break;
       case Alignment.End:
-        alignmentOffSet = this.state.containerWidth as number - this.itemSize();
+        alignmentOffSet = this.width as number - this.itemSize;
         break;
       default:
         alignmentOffSet = 0;
@@ -424,18 +437,31 @@ class CarouselVirtualized extends React.PureComponent<
   private setInitiallOffset() {
     if (this.props.alignment) {
       const alignmentOffSet = this.calucateAlignmentOffSet(this.props.alignment);
-      this.scrollTo(((this.props.currentIndex || 0) * this.itemSize()) - alignmentOffSet);
+      this.scrollTo(((this.props.currentIndex || 0) * this.itemSize) - alignmentOffSet);
     }
+  }
+
+  private onResize = () => {
+    if (this.containerRef) {
+      this.setState(
+        {
+          containerHeight: this.containerRef.offsetHeight,
+          containerWidth: this.containerRef.offsetWidth,
+          eventName: EventName.Resize,
+        },
+        () => this.scrollToItem(this.props.currentIndex || 0),
+      );
+    }
+  }
+
+  private onThrottleResize = () => {
+    this.throttledResize();
   }
 
   private onScroll = ({ scrollOffset, scrollUpdateWasRequested }) => {
     if (!scrollUpdateWasRequested) {
       this.scrollOffsetInitial = scrollOffset;
     }
-  }
-
-  private onResize = () => {
-    this.throttledResize();
   }
 
   private handleKeyDown = (
@@ -550,7 +576,7 @@ class CarouselVirtualized extends React.PureComponent<
     const slidesMoved = CarouselVirtualized.slidesMoved({
       arrowClick: false,
       deltaX: this.state.deltaX,
-      itemSize: this.itemSize(),
+      itemSize: this.itemSize,
     });
 
     this.onEvent(slidesMoved, eventName);
@@ -562,8 +588,8 @@ class CarouselVirtualized extends React.PureComponent<
       return 0;
     }
 
-    if (scrollPosition > currentIndex * this.itemSize()) {
-      return scrollPosition;
+    if (scrollPosition > (this.props.itemCount * this.itemSize) - this.width) {
+      return (this.props.itemCount * this.itemSize) - this.width;
     }
 
     return scrollPosition;
@@ -629,8 +655,8 @@ class CarouselVirtualized extends React.PureComponent<
       arrowClick: true,
       arrowStep,
       arrowStepOffset,
-      itemSize: this.itemSize(),
-      width: this.state.containerWidth,
+      itemSize: this.itemSize,
+      width: this.width,
     });
     this.onEvent(slidesMoved * Direction.Left, EventName.LeftArrowClick);
   }
@@ -641,20 +667,24 @@ class CarouselVirtualized extends React.PureComponent<
       arrowClick: true,
       arrowStep,
       arrowStepOffset,
-      itemSize: this.itemSize(),
-      width: this.state.containerWidth,
+      itemSize: this.itemSize,
+      width: this.width,
     });
-    this.onEvent(slidesMoved * Direction.Right, EventName.LeftArrowClick);
+    this.onEvent(slidesMoved * Direction.Right, EventName.RightArrowClick);
   }
 
-  private itemSize() {
+  private get width() {
+    return this.itemSize && this.props.slideCount
+      ? this.itemSize * this.props.slideCount
+      : this.props.width || this.state.containerWidth || 0;
+  }
+
+  private get itemSize() {
     const { itemSize, width, slideCount } = this.props;
 
-    return itemSize
-      ? itemSize
-      : slideCount
-        ? width || this.state.containerWidth as number / slideCount
-        : this.state.containerWidth || 0;
+    return itemSize || (slideCount
+      ? (width || this.state.containerWidth || 0) / slideCount
+      : this.state.containerWidth || 0);
   }
 }
 
