@@ -1,14 +1,12 @@
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import { FixedSizeList } from 'react-window';
-
-import { RenderComponent } from '../../typings/RenderComponent';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
 interface ISliderProps {
+  children: React.ComponentType<ListChildComponentProps>;
   autofocus?: boolean;
   carouselName?: string;
   carouselRef: React.RefObject<FixedSizeList>;
-  children: RenderComponent<unknown>;
   currentIndex: number;
   height: string | number;
   initialScrollOffset?: number;
@@ -36,9 +34,7 @@ interface ISliderProps {
   setContainerRef?(): void;
 }
 
-export class Slider extends React.Component<
-  ISliderProps
-> {
+export class Slider extends React.Component<ISliderProps> {
   // TODO: align PropTypes with Typescript types
   // public static propTypes = {
   //   autofocus: PropTypes.bool,

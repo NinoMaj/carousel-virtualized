@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
-import { Slider } from '../../../src/components/Slider/Slider';
+import { Slider } from '../../../src/components/Slider';
 
 test('Slider is rendered', () => {
   const component = renderer.create(
