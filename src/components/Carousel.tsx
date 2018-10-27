@@ -3,23 +3,17 @@ import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { FixedSizeList } from 'react-window';
 
-import { RESIZE_THROTTLE_THRESHOLD } from '../../consts';
-import { Direction } from '../../enums/Direction';
-import { EventName } from '../../enums/EventName';
-import { KeyboardButton } from '../../enums/KeyboardButton';
+import { RESIZE_THROTTLE_THRESHOLD } from '../consts';
+import { Direction } from '../enums/Direction';
+import { EventName } from '../enums/EventName';
+import { KeyboardButton } from '../enums/KeyboardButton';
+import { IDictionary } from '../interfaces/IDictionary';
 
 declare const window: Window;
-
-interface IRenderComponentProps<T = any> {
-  [key: string]: T;
-}
-
-type RenderComponent = (props: IRenderComponentProps) => React.ReactNode;
 
 interface ICarouselProps {
   autofocus?: boolean;
   carouselName?: string;
-  children: RenderComponent;
   disableDrag?: boolean;
   disableTouch?: boolean;
   height?: string | number;
@@ -35,6 +29,7 @@ interface ICarouselProps {
   currentIndex?: number;
   style?: object;
   width?: number;
+  children(props: IDictionary): React.ReactNode;
   onItemsRendered?(items: any): any; // TODO: add type
 }
 
@@ -185,11 +180,7 @@ class Carousel extends React.Component<
   public render() {
     const {
       children,
-      outerClassName,
-      height,
       itemCount,
-      outerStyle,
-      width,
     } = this.props;
 
     const calculatedWidth: number =
@@ -199,37 +190,35 @@ class Carousel extends React.Component<
 
     const calculatedInitialScrollOffset: number = this.itemSize() || this.state.width * this.state.currentIndex;
 
-    return (
-      children({
-        enableKeyboard: {
-          onKeyDown: this.handleOnKeyDown,
-        },
-        enableMouse: {
-          onClick: this.handleOnMouseClick,
-          onMouseDown: this.handleOnMouseDown,
-          onMouseMove: this.handleOnMouseMove,
-        },
-        enableTouch: {
-          onTouchCancel: this.handleTouchCancel,
-          onTouchEnd: this.handleTouchEnd,
-          onTouchMove: this.handleTouchMove,
-          onTouchStart: this.handleTouchStart,
-        },
-        sliderProps: {
-          carouselRef: this.carouselRef,
-          currentIndex: this.state.currentIndex,
-          height: this.state.height,
-          initialScrollOffset: calculatedInitialScrollOffset,
-          isMounted: this.state.isMounted,
-          itemCount,
-          itemSize: this.itemSize(),
-          onItemsRendered: this.onItemsRendered,
-          setContainerRef: this.setContainerRef,
-          style: { overflow: 'hidden'},
-          width: calculatedWidth,
-        },
-      })
-    );
+    return children({
+      enableKeyboard: {
+        onKeyDown: this.handleOnKeyDown,
+      },
+      enableMouse: {
+        onClick: this.handleOnMouseClick,
+        onMouseDown: this.handleOnMouseDown,
+        onMouseMove: this.handleOnMouseMove,
+      },
+      enableTouch: {
+        onTouchCancel: this.handleTouchCancel,
+        onTouchEnd: this.handleTouchEnd,
+        onTouchMove: this.handleTouchMove,
+        onTouchStart: this.handleTouchStart,
+      },
+      sliderProps: {
+        carouselRef: this.carouselRef,
+        currentIndex: this.state.currentIndex,
+        height: this.state.height,
+        initialScrollOffset: calculatedInitialScrollOffset,
+        isMounted: this.state.isMounted,
+        itemCount,
+        itemSize: this.itemSize(),
+        onItemsRendered: this.onItemsRendered,
+        setContainerRef: this.setContainerRef,
+        style: { overflow: 'hidden'},
+        width: calculatedWidth,
+      },
+    });
   }
 
   private setContainerRef = (ref) => {

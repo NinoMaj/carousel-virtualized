@@ -1,20 +1,17 @@
 import { throttle } from 'lodash';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import { FixedSizeList as Carousel } from 'react-window';
+import { FixedSizeList as Carousel, ListChildComponentProps } from 'react-window';
 
-import { RESIZE_THROTTLE_THRESHOLD } from '../../consts';
-import { Alignment } from '../../enums/Alignment';
-import { ArrowStep } from '../../enums/ArrowStep';
-import { Direction } from '../../enums/Direction';
-import { Easing } from '../../enums/Easing';
-import { EventName } from '../../enums/EventName';
-import { KeyboardButton } from '../../enums/KeyboardButton';
-import { OnItemsRendered } from '../../typings/OnItemsRendered';
+import { RESIZE_THROTTLE_THRESHOLD } from '../consts';
+import { Alignment } from '../enums/Alignment';
+import { ArrowStep } from '../enums/ArrowStep';
+import { Direction } from '../enums/Direction';
+import { Easing } from '../enums/Easing';
+import { EventName } from '../enums/EventName';
+import { KeyboardButton } from '../enums/KeyboardButton';
 
 declare const window: Window;
-
-import { RenderComponent } from '../../typings/RenderComponent';
 
 type IArrowButton = ({
   onClick,
@@ -25,12 +22,12 @@ type IArrowButton = ({
 }) => any;
 
 interface ICarouselVirtualizedProps {
+  children: React.ComponentType<ListChildComponentProps>;
   alignment?: Alignment;
   animationDuration?: number;
   arrowStep?: string | number;
   arrowStepOffset?: number;
   carouselName?: string;
-  children: RenderComponent<unknown>;
   currentIndex?: number;
   disableAnimation?: boolean | number;
   disableMouseDrag?: boolean;
@@ -44,7 +41,6 @@ interface ICarouselVirtualizedProps {
   itemData?: any;
   itemSize?: number;
   leftArrow?: IArrowButton;
-  onItemsRendered?: OnItemsRendered;
   outerClassName?: string;
   outerRef?: any;
   outerStyle?: object;
@@ -53,6 +49,7 @@ interface ICarouselVirtualizedProps {
   slideCount?: number;
   width?: number;
   wrapAround?: boolean;
+  onItemsRendered?(items: any): any;
   easing?(t): number;
   onAnimationComplete?(): unknown;
   onEvent?({ newIndex, eventName }: { newIndex: number; eventName: string }): unknown;
