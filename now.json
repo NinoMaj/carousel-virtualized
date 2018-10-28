@@ -1,3 +1,7 @@
 {
-  "name": "carousel-virtualized"
+  "name": "carousel-virtualized",
+  "public": true,
+  "features": {
+    "cloud": "v2"
+  }
 }

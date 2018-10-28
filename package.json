@@ -12,8 +12,7 @@
     "test-benchmark-watch": "jest benchmark --watch",
     "lint": "tslint --project .",
     "build": "rollup -c",
-    "build-watch": "rollup -c -w",
-    "now-start": "yarn build && cd examples && yarn && yarn build && yarn start"
+    "build-watch": "rollup -c -w"
   },
   "repository": {
     "type": "git",
@@ -49,6 +48,8 @@
     "react-test-renderer": "^16.5.2",
     "react-testing-library": "^5.2.0",
     "rollup": "^0.66.4",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-typescript2": "^0.17.1",
     "rollup-plugin-uglify": "^6.0.0",
     "ts-jest": "^23.10.3",

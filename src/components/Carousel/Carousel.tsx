@@ -1,4 +1,4 @@
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { FixedSizeList } from 'react-window';
