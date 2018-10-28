@@ -2,7 +2,16 @@ import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { FixedSizeList } from 'react-window';
 
-import { RenderComponent } from '../../typings/RenderComponent';
+// import { RenderComponent } from '../../typings/RenderComponent';
+
+interface IRenderComponentProps<T> {
+  data: T;
+  index: number;
+  isScrolling?: boolean;
+  style: object;
+}
+
+type RenderComponent<T> = (props: IRenderComponentProps<T>) => React.ReactElement<any> | null;
 
 interface ISliderProps {
   autofocus?: boolean;

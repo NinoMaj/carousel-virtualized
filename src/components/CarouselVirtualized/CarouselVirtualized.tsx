@@ -10,11 +10,35 @@ import { Direction } from '../../enums/Direction';
 import { Easing } from '../../enums/Easing';
 import { EventName } from '../../enums/EventName';
 import { KeyboardButton } from '../../enums/KeyboardButton';
-import { OnItemsRendered } from '../../typings/OnItemsRendered';
+// import { OnItemsRendered } from '../../typings/OnItemsRendered';
+// import { RenderComponent } from '../../typings/RenderComponent';
+
+type OnItemsRendered = ({
+  carouselName,
+  eventName,
+  overscanStartIndex,
+  overscanStopIndex,
+  visibleStartIndex,
+  visibleStopIndex,
+}: {
+  carouselName: string | undefined;
+  eventName: string;
+  overscanStartIndex: number;
+  overscanStopIndex: number;
+  visibleStartIndex: number;
+  visibleStopIndex: number;
+}) => any;
+
+interface IRenderComponentProps<T> {
+  data: T;
+  index: number;
+  isScrolling?: boolean;
+  style: object;
+}
+
+type RenderComponent<T> = (props: IRenderComponentProps<T>) => React.ReactElement<any> | null;
 
 declare const window: Window;
-
-import { RenderComponent } from '../../typings/RenderComponent';
 
 type IArrowButton = ({
   onClick,
