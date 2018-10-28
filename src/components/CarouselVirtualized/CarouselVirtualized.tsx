@@ -363,7 +363,7 @@ class CarouselVirtualized extends React.PureComponent<
             >
               {children}
             </Carousel>
-            ) : null}
+          ) : null}
         </div>
         {rightArrow &&
           rightArrow({ onClick: this.handleRightArrowClick, currentIndex })}
