@@ -1,8 +1,4 @@
 {
-  "name": "carousel-virtualized",
-  "public": true,
-  "features": {
-    "cloud": "v2"
-  },
-  "type": "docker"
+  "version": 2,
+  "builds": [{ "src": "examples/pages/basic.js", "use": "@now/next" }]
 }
