@@ -1,4 +1,4 @@
-import babel from 'rollup-plugin-babel';
+import typescript from 'rollup-plugin-typescript2';
 import {uglify} from 'rollup-plugin-uglify';
 import nodeResolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
@@ -17,9 +17,10 @@ export default [{
   ],
   external,
   plugins: [
-    babel({
-      runtimeHelpers: true,
-      plugins: ['@babel/transform-runtime'],
+    typescript({
+      check: true,
+      typescript: require('typescript'),
+      tsconfig: './tsconfig.base.json',
     }),
     nodeResolve(),
     commonjs(),
@@ -35,9 +36,10 @@ export default [{
   ],
   external,
   plugins: [
-    babel({
-      runtimeHelpers: true,
-      plugins: [['@babel/transform-runtime', { useESModules: true }]],
+    typescript({
+      check: true,
+      typescript: require('typescript'),
+      tsconfig: './tsconfig.base.json',
     }),
     nodeResolve(),
     commonjs(),
