@@ -73,6 +73,7 @@ const slide = ({ style }) => (
 ## Advance usage
 
 ## Examples/demos
+- [basic example](https://carousel-virtualized.now.sh/basic "Demo of basic example")
 
 ## API
 ### Props

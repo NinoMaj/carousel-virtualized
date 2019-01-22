@@ -1,5 +1,5 @@
 import React from 'react';
-import { CarouselVirtualized } from '../../dist/index.esm.js';
+import { CarouselVirtualized } from '../lib/index.esm.js';
 
 const containerStyles = {
   height: '400px',
@@ -64,7 +64,7 @@ class Basic extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { currentIndex: 0 };
+    this.state = { currentIndex: 1 };
   }
 
   handleOnEvent = ({ newIndex }) => {

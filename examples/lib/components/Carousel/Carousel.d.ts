@@ -1,0 +1,111 @@
+import * as PropTypes from 'prop-types';
+import * as React from 'react';
+interface IRenderComponentProps<T = any> {
+    [key: string]: T;
+}
+declare type RenderComponent = (props: IRenderComponentProps) => React.ReactNode;
+interface ICarouselProps {
+    autofocus?: boolean;
+    carouselName?: string;
+    children: RenderComponent;
+    disableDrag?: boolean;
+    disableTouch?: boolean;
+    height?: string | number;
+    initialScrollOffset?: number;
+    innerClassName?: string;
+    itemCount: number;
+    itemData?: any;
+    itemSize?: number;
+    outerClassName?: string;
+    outerStyle?: object;
+    overscanCount?: number;
+    slideCount?: number;
+    currentIndex?: number;
+    style?: object;
+    width?: number;
+    onItemsRendered?(items: any): any;
+}
+interface ICarouselState {
+    currentIndex: number;
+    deltaX: number;
+    eventName: string;
+    height: number;
+    isMounted: boolean;
+    isMouseDragActive: boolean;
+    isTouchDragActive: boolean;
+    mouseIsMoving: boolean;
+    startX: number;
+    startY: number;
+    width: number;
+}
+declare class Carousel extends React.Component<ICarouselProps, ICarouselState> {
+    static propTypes: {
+        autofocus: PropTypes.Requireable<boolean>;
+        carouselName: PropTypes.Requireable<string>;
+        children: PropTypes.Validator<(...args: any[]) => any>;
+        currentIndex: PropTypes.Requireable<number>;
+        disableDrag: PropTypes.Requireable<boolean>;
+        disableTouch: PropTypes.Requireable<boolean>;
+        height: PropTypes.Requireable<React.ReactText>;
+        initialScrollOffset: PropTypes.Requireable<number>;
+        innerClassName: PropTypes.Requireable<boolean>;
+        itemCount: PropTypes.Validator<number>;
+        itemData: PropTypes.Requireable<any>;
+        itemSize: PropTypes.Requireable<number>;
+        onItemsRendered: PropTypes.Requireable<(...args: any[]) => any>;
+        outerClassName: PropTypes.Requireable<string>;
+        outerStyle: PropTypes.Requireable<object>;
+        overscanCount: PropTypes.Requireable<number>;
+        slideCount: PropTypes.Requireable<number>;
+        style: PropTypes.Requireable<object>;
+        width: PropTypes.Requireable<number>;
+    };
+    static defaultProps: {
+        autofocus: boolean;
+        carouselName: string;
+        currentIndex: number;
+        disableDrag: boolean;
+        disableTouch: boolean;
+        height: null;
+        initialScrollOffset: number;
+        innerClassName: null;
+        itemData: null;
+        itemSize: null;
+        onItemsRendered: () => void;
+        outerClassName: null;
+        outerStyle: {};
+        overscanCount: number;
+        slideCount: null;
+        style: {};
+        width: null;
+    };
+    static slidesMoved(deltaX: any, itemSize: any): number;
+    private moveTimer;
+    private containerRef;
+    private carouselRef;
+    private throttledResize;
+    constructor(props: any);
+    componentDidMount(): void;
+    componentDidUpdate(prevProps: ICarouselProps): void;
+    componentWillUnmount(): void;
+    render(): React.ReactNode;
+    private setContainerRef;
+    private onResize;
+    private itemSize;
+    private handleOnKeyDown;
+    private handleOnMouseDown;
+    private handleOnMouseMove;
+    private handleOnMouseClick;
+    private handleTouchStart;
+    private handleTouchMove;
+    private handleTouchEnd;
+    private handleTouchCancel;
+    private endTouchMove;
+    private onDragStart;
+    private onDragMove;
+    private onDragEnd;
+    private computeNextSlide;
+    private changeSlide;
+    private onItemsRendered;
+}
+export { Carousel };

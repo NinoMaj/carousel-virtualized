@@ -1,5 +1,5 @@
 import React from 'react';
-import { Carousel, Slider } from '../../dist/index.esm.js';
+import { Carousel, Slider } from '../lib/index.esm.js';
 
 const slideStyles = {
   display: 'flex',
