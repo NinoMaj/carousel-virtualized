@@ -1,5 +1,6 @@
 {
   "version": 2,
   "name": "carousel-virtualized",
+  "alias": "carousel-virtualized", 
   "builds": [{ "src": "next.config.js", "use": "@now/next" }]
 }
